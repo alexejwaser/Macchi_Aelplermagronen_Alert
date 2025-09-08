@@ -1,0 +1,28 @@
+name: Macchi-Älplermagronen-Alert
+
+on:
+  schedule:
+    - cron: "0 5 * * 1-5"   # 07:00 CEST
+    - cron: "0 6 * * 1-5"   # 07:00 CET
+  workflow_dispatch: {}
+
+jobs:
+  alert:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - run: python menu_watcher.py
+        env:
+          MENU_URL: ${{ secrets.MENU_URL }}
+          KEYWORDS: ${{ secrets.KEYWORDS }}
+          KEYWORDS_REGEX: ${{ secrets.KEYWORDS_REGEX }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          SMTP_FROM: ${{ secrets.SMTP_FROM }}
+          SMTP_TO: ${{ secrets.SMTP_TO }}
